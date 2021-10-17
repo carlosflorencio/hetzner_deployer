@@ -1,0 +1,32 @@
+name: 'Hetzner Deployer'
+description: 'Rolling deployments using Hetzner Loadbalancers. Removes the servers from the LB, enters into each server via SSH to run some deploy commands and puts back the server on the LB.'
+author: Carlos Florêncio
+
+inputs:
+  servers:
+    description: 'List of server ips (CSV)'
+    required: true
+  commands:
+    description: 'Commands to run on each server (List)'
+    required: true
+  hetzer_token:
+    description: 'Hetzner API token with write permissions (string)'
+    required: true
+  ssh_user:
+    description: 'SSH user (string)'
+    required: true
+    default: root
+  ssh_port:
+    description: 'SSH port (string)'
+    required: true
+    default: "22"
+  ssh_key:
+    description: 'SSH private key file (string)'
+    required: true
+runs:
+  using: 'node14'
+  main: 'index.js'
+
+branding:
+  icon: 'server'
+  color: 'red'

@@ -1,0 +1,19 @@
+{
+  "name": "hetzner-deployer",
+  "version": "1.0.0",
+  "description": "Rolling deployments using Hetzner Loadbalancers. Removes the servers from the LB, enters into each server via SSH to run some deploy commands and puts back the server on the LB.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "index.js",
+  },
+  "keywords": ["hetzner", "github"],
+  "author": "Carlos Florêncio",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "axios": "^0.23.0",
+    "ssh2": "^1.5.0"
+  }
+}
