@@ -5,9 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "index.js",
+    "start": "index.js"
   },
-  "keywords": ["hetzner", "github"],
+  "keywords": [
+    "hetzner",
+    "github"
+  ],
   "author": "Carlos Florêncio",
   "license": "MIT",
   "devDependencies": {},
