@@ -4,7 +4,8 @@
   "description": "Rolling deployments using Hetzner Loadbalancers for zero downtime deployments.",
   "main": "index.js",
   "scripts": {
-    "start": "index.js"
+    "start": "node dist/index.js",
+    "build": "ncc build index.js --license licenses.txt"
   },
   "keywords": [
     "hetzner",
@@ -12,7 +13,9 @@
   ],
   "author": "Carlos Florêncio",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@vercel/ncc": "^0.31.1"
+  },
   "dependencies": {
     "@actions/core": "^1.6.0",
     "axios": "^0.23.0",
