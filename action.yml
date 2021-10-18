@@ -9,7 +9,7 @@ inputs:
   commands:
     description: Commands to run on each server (List)
     required: true
-  hetzer_token:
+  hetzner_token:
     description: Hetzner API token with write permissions (string)
     required: true
   ssh_user:
