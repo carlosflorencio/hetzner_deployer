@@ -2,25 +2,24 @@ import core from '@actions/core'
 import {runCommands, ServerConnection} from "./ssh.js"
 import {findLoadbalancersWithServer, findServer, Hetzner} from "./hetzner.js"
 
-const SSH_KEY = core.getInput('ssh_key', { required: true })
-let SSH_PORT = core.getInput('ssh_port') || "22"
-const SSH_USER = core.getInput('ssh_port') || "root"
-const HETZNER_API_TOKEN = core.getInput('hetzner_token', { required: true })
-const COMMANDS = core.getMultilineInput('commands', { required: true })
-let GRACEFUL_WAIT = core.getInput('graceful_wait_seconds') || 30
-const SERVERS = core.getInput('servers', { required: true }).split(',').map(s => s.trim())
+const options = {
+  SSH_KEY: core.getInput('ssh_key', { required: true }),
+  SSH_PORT: core.getInput('ssh_port') || "22",
+  SSH_USER: core.getInput('ssh_port') || "root",
+  HETZNER_API_TOKEN: core.getInput('hetzner_token', { required: true }),
+  COMMANDS: core.getMultilineInput('commands', { required: true }),
+  GRACEFUL_WAIT: core.getInput('graceful_wait_seconds') || 30,
+  SERVERS: core.getInput('servers', { required: true }).split(',').map(s => s.trim())
+}
 
-GRACEFUL_WAIT = parseInt(GRACEFUL_WAIT)
-SSH_PORT = parseInt(SSH_PORT)
-
-const hetzner = new Hetzner(HETZNER_API_TOKEN)
+const hetzner = new Hetzner(options.HETZNER_API_TOKEN)
 
 async function run() {
   const hetznerServers = await hetzner.getServers()
   const hetznerLoadbalancers = await hetzner.getLoadbalancers()
 
-  for (let ip of SERVERS) {
-    const sshConnection = new ServerConnection(ip, SSH_PORT, SSH_USER, SSH_KEY)
+  for (let ip of options.SERVERS) {
+    const sshConnection = new ServerConnection(ip, options.SSH_PORT, options.SSH_USER, options.SSH_KEY)
     const server = findServer(hetznerServers, ip)
     const lbsWithThisServer = findLoadbalancersWithServer(hetznerLoadbalancers, server.id)
 
@@ -32,13 +31,13 @@ async function run() {
         throw new Error("Failed to remove the target server from the loadbalancer")
       }
 
-      core.info(`Waiting ${GRACEFUL_WAIT} seconds for the server to finish inflight requests`)
+      core.info(`Waiting ${options.GRACEFUL_WAIT} seconds for the server to finish inflight requests`)
 
       // Wait a few seconds so the server can finish the inflight requests
-      await sleep(GRACEFUL_WAIT * 1000)
+      await sleep(parseInt(options.GRACEFUL_WAIT) * 1000)
 
       core.info(`Running deploy commands`)
-      const deployOutput = await runCommands(sshConnection, COMMANDS)
+      const deployOutput = await runCommands(sshConnection, options.COMMANDS)
 
       core.startGroup('Commands output')
       deployOutput.forEach(o => core.info)

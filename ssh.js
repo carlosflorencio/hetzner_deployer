@@ -31,7 +31,7 @@ export const runCommands = (sshConnection, commands) => {
 
     conn.connect({
       host: sshConnection.host,
-      port: sshConnection.port,
+      port: parseInt(sshConnection.port),
       username: sshConnection.username,
       privateKey: sshConnection.key
     })
