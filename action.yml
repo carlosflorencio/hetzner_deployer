@@ -1,5 +1,5 @@
 name: 'Hetzner Deployer'
-description: 'Rolling deployments using Hetzner Loadbalancers. Removes the servers from the LB, enters into each server via SSH to run some deploy commands and puts back the server on the LB.'
+description: 'Rolling deployments using Hetzner Loadbalancers for zero downtime deployments'
 author: Carlos Florêncio
 
 inputs:
@@ -24,7 +24,7 @@ inputs:
     description: 'SSH private key file (string)'
     required: true
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'index.js'
 
 branding:
