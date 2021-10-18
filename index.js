@@ -5,7 +5,7 @@ const {Hetzner, findServer, findLoadbalancersWithServer} = require("./hetzner")
 const options = {
   SSH_KEY: core.getInput('ssh_key', { required: true }),
   SSH_PORT: core.getInput('ssh_port') || "22",
-  SSH_USER: core.getInput('ssh_port') || "root",
+  SSH_USER: core.getInput('ssh_user') || "root",
   HETZNER_API_TOKEN: core.getInput('hetzner_token', { required: true }),
   COMMANDS: core.getMultilineInput('commands', { required: true }),
   GRACEFUL_WAIT: core.getInput('graceful_wait_seconds') || 30,
