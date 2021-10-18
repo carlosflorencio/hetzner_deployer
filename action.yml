@@ -4,24 +4,24 @@ author: Carlos Florêncio
 
 inputs:
   servers:
-    description: 'List of server ips (CSV)'
+    description: List of server ips (CSV)
     required: true
   commands:
-    description: 'Commands to run on each server (List)'
+    description: Commands to run on each server (List)
     required: true
   hetzer_token:
-    description: 'Hetzner API token with write permissions (string)'
+    description: Hetzner API token with write permissions (string)
     required: true
   ssh_user:
-    description: 'SSH user (string)'
+    description: SSH user (string)
     required: true
     default: root
   ssh_port:
-    description: 'SSH port (string)'
+    description: SSH port (string)
     required: true
     default: "22"
   ssh_key:
-    description: 'SSH private key file (string)'
+    description: SSH private key file (string)
     required: true
 runs:
   using: 'node12'
