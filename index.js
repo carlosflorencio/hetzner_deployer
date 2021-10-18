@@ -1,4 +1,4 @@
-const core = require("@actions/core")
+const core = require('@actions/core')
 const {ServerConnection, runCommands} = require("./ssh")
 const {Hetzner, findServer, findLoadbalancersWithServer} = require("./hetzner")
 
