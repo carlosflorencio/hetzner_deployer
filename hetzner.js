@@ -1,6 +1,6 @@
-import axios from 'axios'
+const axios = require("axios")
 
-export class Hetzner {
+class Hetzner {
   constructor(token) {
     this.axios = axios.create({
       baseURL: 'https://api.hetzner.cloud/v1',
@@ -44,11 +44,11 @@ export class Hetzner {
   }
 }
 
-export const findServer = (hetznerServerResponse, ip) => {
+const findServer = (hetznerServerResponse, ip) => {
   return hetznerServerResponse.servers.find(s => s.public_net.ipv4.ip === ip)
 }
 
-export const findLoadbalancersWithServer = (hetznerLoadbalancersResponse, serverId) => {
+const findLoadbalancersWithServer = (hetznerLoadbalancersResponse, serverId) => {
   const lbs = []
 
   for (const lb of hetznerLoadbalancersResponse.load_balancers) {
@@ -58,4 +58,10 @@ export const findLoadbalancersWithServer = (hetznerLoadbalancersResponse, server
   }
 
   return lbs
+}
+
+module.exports = {
+  Hetzner,
+  findServer,
+  findLoadbalancersWithServer
 }

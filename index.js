@@ -1,6 +1,6 @@
-import core from '@actions/core'
-import {runCommands, ServerConnection} from "./ssh.js"
-import {findLoadbalancersWithServer, findServer, Hetzner} from "./hetzner.js"
+const core = require("@actions/core")
+const {ServerConnection, runCommands} = require("./ssh")
+const {Hetzner, findServer, findLoadbalancersWithServer} = require("./hetzner")
 
 const options = {
   SSH_KEY: core.getInput('ssh_key', { required: true }),
@@ -40,7 +40,7 @@ async function run() {
       const deployOutput = await runCommands(sshConnection, options.COMMANDS)
 
       core.startGroup('Commands output')
-      deployOutput.forEach(o => core.info)
+      deployOutput.forEach(core.info)
       core.endGroup()
 
       core.info(`Inserting ${server.name}(${ip}) into loadbalancer (${lb.name})`)
@@ -88,10 +88,6 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-try {
-  core.info('Starting deploy')
-  await run()
-}
-catch (err) {
-  core.setFailed(`Action failed with error ${err}`);
-}
+core.info('Starting deploy')
+run().catch(err => core.setFailed(`Action failed with error ${err}`))
+

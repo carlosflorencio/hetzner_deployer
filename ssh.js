@@ -1,6 +1,6 @@
-import {Client} from 'ssh2'
+const {Client} = require('ssh2')
 
-export class ServerConnection {
+class ServerConnection {
   constructor(host, port, username, key) {
     this.host = host
     this.port = port
@@ -9,7 +9,7 @@ export class ServerConnection {
   }
 }
 
-export const runCommands = (sshConnection, commands) => {
+const runCommands = (sshConnection, commands) => {
   return new Promise((resolve, reject) => {
     const conn = new Client()
 
@@ -59,4 +59,9 @@ function executeCommand(conn, cmd) {
       })
     })
   })
+}
+
+module.exports = {
+  ServerConnection,
+  runCommands
 }

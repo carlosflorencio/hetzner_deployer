@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Rolling deployments using Hetzner Loadbalancers for zero downtime deployments.",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "index.js"
   },
