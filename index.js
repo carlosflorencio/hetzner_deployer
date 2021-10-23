@@ -37,8 +37,6 @@ async function run() {
       await sleep(parseInt(options.GRACEFUL_WAIT) * 1000)
 
       core.info(`Running deploy commands`)
-      const cmds = joinMultilineCommands(options.COMMANDS)
-      cmds.forEach(c => core.warning(c))
       const deployOutput = await runCommands(sshConnection, joinMultilineCommands(options.COMMANDS))
 
       core.startGroup('Commands output')
