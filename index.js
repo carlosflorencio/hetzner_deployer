@@ -37,7 +37,7 @@ async function run() {
       await sleep(parseInt(options.GRACEFUL_WAIT) * 1000)
 
       core.info(`Running deploy commands`)
-      const deployOutput = await runCommands(sshConnection, options.COMMANDS)
+      const deployOutput = await runCommands(sshConnection, joinMultilineCommands(options.COMMANDS))
 
       core.startGroup('Commands output')
       deployOutput.forEach(core.info)
@@ -93,3 +93,29 @@ function sleep(ms) {
 core.info('Starting deploy\n')
 run().catch(err => core.setFailed(`Action failed with error ${err}`))
 
+function joinMultilineCommands(commands) {
+  const cmds = []
+  let tmpCmd = null
+
+  for (let line of commands) {
+    if(tmpCmd) {
+      if(line.trim().slice(-1) === '\\') {
+        tmpCmd += line.replace('\\', '')
+      } else {
+        tmpCmd += line
+        cmds.push(tmpCmd)
+        tmpCmd = null
+      }
+      continue
+    }
+
+    if(line.trim().slice(-1) === '\\') {
+      tmpCmd = line.replace('\\', '')
+    } else {
+      cmds.push(line)
+    }
+
+  }
+
+  return cmds
+}

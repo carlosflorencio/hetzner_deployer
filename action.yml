@@ -23,6 +23,10 @@ inputs:
   ssh_key:
     description: SSH private key file (string)
     required: true
+  graceful_wait_seconds:
+    description: Waiting time before executing the commands on the server
+    required: true
+    default: "30"
 runs:
   using: 'node12'
   main: 'dist/index.js'
