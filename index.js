@@ -55,7 +55,7 @@ async function run() {
       // if it doesn't, this will throw an exception and the deploy will stop
       await waitUntilServerIsHealthy(lb.id, server.id)
 
-      core.warning(`${server.name} (${ip}) deployed with success!\n\n`)
+      core.notice(`${server.name} (${ip}) deployed with success!\n\n`)
     }
   }
 }
