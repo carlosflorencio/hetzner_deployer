@@ -27214,7 +27214,7 @@ async function run() {
     const lbsWithThisServer = findLoadbalancersWithServer(hetznerLoadbalancers, server.id)
 
     for (let lb of lbsWithThisServer) {
-      core.info(`Removing ${server.name}(${ip}) from loadbalancer (${lb.name})`)
+      core.info(`Removing ${server.name} (${ip}) from loadbalancer (${lb.name})`)
       const removed = await hetzner.removeLoadbalancerTarget(lb.id, server.id)
 
       if(removed.action.status !== "success") {
@@ -27227,13 +27227,15 @@ async function run() {
       await sleep(parseInt(options.GRACEFUL_WAIT) * 1000)
 
       core.info(`Running deploy commands`)
-      const deployOutput = await runCommands(sshConnection, options.COMMANDS)
+      const cmds = joinMultilineCommands(options.COMMANDS)
+      cmds.forEach(c => core.warning(c))
+      const deployOutput = await runCommands(sshConnection, joinMultilineCommands(options.COMMANDS))
 
       core.startGroup('Commands output')
       deployOutput.forEach(core.info)
       core.endGroup()
 
-      core.info(`Inserting ${server.name}(${ip}) into loadbalancer (${lb.name})`)
+      core.info(`Inserting ${server.name} (${ip}) into loadbalancer (${lb.name})`)
       const inserted = await hetzner.addTargetToLoadbalancer(lb.id, server.id)
 
       if(inserted.action.status !== "success") {
@@ -27245,7 +27247,7 @@ async function run() {
       // if it doesn't, this will throw an exception and the deploy will stop
       await waitUntilServerIsHealthy(lb.id, server.id)
 
-      core.notice(`${server.name}(${ip}) deployed with success`)
+      core.warning(`${server.name} (${ip}) deployed with success!\n\n`)
     }
   }
 }
@@ -27259,14 +27261,16 @@ async function waitUntilServerIsHealthy(loadbalancerId, serverId) {
 
       if(target.type === "server" && target.server.id === serverId) {
         // one single port healthy is enough
-        if(target.health_status.find(h => h.status === "healthy")) {
+        const health = target.health_status.find(h => h.status === "healthy")
+        if(health) {
+          core.info(`Server is healthy on port ${health.listen_port}!`)
           return "done"
         }
       }
 
     }
 
-    core.info(`Not healthy on this try, ${tries} remaining`)
+    core.info(`Not healthy on this try, ${tries} tries remaining`)
 
     await sleep(1000)
   } while (--tries > 0)
@@ -27278,9 +27282,35 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-core.info('Starting deploy')
+core.info('Starting deploy\n')
 run().catch(err => core.setFailed(`Action failed with error ${err}`))
 
+function joinMultilineCommands(commands) {
+  const cmds = []
+  let tmpCmd = null
+
+  for (let line of commands) {
+    if(tmpCmd) {
+      if(line.trim().slice(-1) === '\\') {
+        tmpCmd += line.replace('\\', '')
+      } else {
+        tmpCmd += line
+        cmds.push(tmpCmd)
+        tmpCmd = null
+      }
+      continue
+    }
+
+    if(line.trim().slice(-1) === '\\') {
+      tmpCmd = line.replace('\\', '')
+    } else {
+      cmds.push(line)
+    }
+
+  }
+
+  return cmds
+}
 
 })();
 
