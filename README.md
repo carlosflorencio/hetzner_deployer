@@ -29,7 +29,6 @@ jobs:
           ssh_port: 22
           graceful_wait_seconds: 5
           commands: |
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker rm -f app || true
             docker run -d --restart always \
               --name app \
