@@ -17,22 +17,22 @@ name: Deploy
 on: [push]
 jobs:
   deploy:
-      if: github.ref == 'refs/heads/main'
-      needs: [build]
-      runs-on: ubuntu-latest
-      steps:
-        - uses: carlosflorencio/hetzner_deployer@v1
-          with:
-            servers: 58.16.128.73, 28.45.100.18
-            hetzner_token: ${{ secrets.HETZNER_TOKEN }}
-            ssh_key: ${{ secrets.SSH_KEY }}
-            ssh_port: 22
-            graceful_wait_seconds: 5
-            commands: |
-              echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-              docker rm -f app || true
-              docker run -d --restart always \
-                --name app \
-                -p 80:80 \
-                ${{ needs.build.outputs.image }}
+    if: github.ref == 'refs/heads/main'
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: carlosflorencio/hetzner_deployer@v1
+        with:
+          servers: 58.16.128.73, 28.45.100.18
+          hetzner_token: ${{ secrets.HETZNER_TOKEN }}
+          ssh_key: ${{ secrets.SSH_KEY }}
+          ssh_port: 22
+          graceful_wait_seconds: 5
+          commands: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker rm -f app || true
+            docker run -d --restart always \
+              --name app \
+              -p 80:80 \
+              ${{ needs.build.outputs.image }}
 ```
